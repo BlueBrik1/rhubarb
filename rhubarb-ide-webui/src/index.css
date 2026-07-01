@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/Sora-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Sora";
+  src: url("/fonts/Sora-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JBM-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JBM-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-display: "Sora", system-ui, sans-serif;
+  --font-sans: "Sora", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+
+  /* rhubarb stalk — crimson/pink */
+  --color-rhubarb-50: #fdf0ee;
+  --color-rhubarb-100: #fbdcd9;
+  --color-rhubarb-200: #f6b8b9;
+  --color-rhubarb-300: #ee8b95;
+  --color-rhubarb-400: #e25c79;
+  --color-rhubarb-500: #cb3661;
+  --color-rhubarb-600: #aa2752;
+  --color-rhubarb-700: #841d44;
+  --color-rhubarb-800: #5e1535;
+  --color-rhubarb-900: #390e25;
+  --color-rhubarb-950: #220817;
+
+  /* leaf — green accent */
+  --color-leaf-300: #c4dc9c;
+  --color-leaf-400: #a1c477;
+  --color-leaf-500: #80a85a;
+  --color-leaf-600: #628844;
+  --color-leaf-700: #496834;
+
+  /* custard — warm cream surfaces */
+  --color-custard-50: #fffaf0;
+  --color-custard-100: #fef3dc;
+  --color-custard-200: #fce6b8;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-rhubarb-950 text-custard-100 antialiased;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  ::selection {
+    @apply bg-rhubarb-700 text-custard-50;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-rhubarb-800);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-rhubarb-700);
+  }
+}

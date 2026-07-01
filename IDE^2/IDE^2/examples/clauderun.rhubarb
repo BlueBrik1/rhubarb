@@ -1,0 +1,21 @@
+Leաesբegգegդzeեtsզgtէleըítթetժetիtlլneխbjծitկknհk Solution ∫
+    Elաelբápգszդásեalզníէhaըatթanժágիskլdáխaiծokկrt trap ⟪hաváբ⟫ self, height: list[int] ⟪vաgeբ -> int ∫
+        ⸘lաgyբn⸘ left ⟜ 0 ∫
+        ⸘lաgyբn⸘ right ⟜ len⟪hաváբ⟫height⟪vաgeբ - 1 ∫
+        ⸘lաgyբn⸘ lM ⟜ 0 ∫
+        ⸘lաgyբn⸘ rM ⟜ 0 ∫
+        ⸘lաgyբn⸘ total ⟜ 0 ∫
+        ⸘aաígբ left < right ∫
+            ⸘hա⸘ height[left] < height[right] ∫
+                ⸘hա⸘ height[left] > lM ∫
+                    ⸘lաgyբn⸘ lM ⟜ height[left] ∫
+                ⸘kաlöբbeգ⸘ ∫
+                    total += lM - height[left]
+                left += 1
+            ⸘kաlöբbeգ⸘ ∫
+                ⸘hա⸘ height[right] > rM ∫
+                    ⸘lաgyբn⸘ rM ⟜ height[right] ∫
+                ⸘kաlöբbeգ⸘ ∫
+                    total += rM - height[right]
+                right -= 1
+        ⸘vաssբa⸘ total ∫

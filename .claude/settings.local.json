@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"C:\\\\IDE^2\\\\IDE^2\\\\webui\\\\public\\\\fonts\")",
+      "Bash(cp \"C:\\\\Users\\\\slee5\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--rhubarb\\\\3f151f36-214c-414c-9fe8-faa1b074085c\\\\scratchpad\\\\Sora-Regular.ttf\" \"C:\\\\Users\\\\slee5\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--rhubarb\\\\3f151f36-214c-414c-9fe8-faa1b074085c\\\\scratchpad\\\\Sora-Bold.ttf\" \"C:\\\\Users\\\\slee5\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--rhubarb\\\\3f151f36-214c-414c-9fe8-faa1b074085c\\\\scratchpad\\\\JBM-Regular.ttf\" \"C:\\\\Users\\\\slee5\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--rhubarb\\\\3f151f36-214c-414c-9fe8-faa1b074085c\\\\scratchpad\\\\JBM-Bold.ttf\" \"C:\\\\IDE^2\\\\IDE^2\\\\webui\\\\public\\\\fonts\\\\\" && ls -la \"C:\\\\IDE^2\\\\IDE^2\\\\webui\\\\public\\\\fonts\")"
+    ]
+  }
+}

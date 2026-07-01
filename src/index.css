@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Sora", "Inter", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+
+  /* rhubarb stalk — crimson/pink */
+  --color-rhubarb-50: #fdf0ee;
+  --color-rhubarb-100: #fbdcd9;
+  --color-rhubarb-200: #f6b8b9;
+  --color-rhubarb-300: #ee8b95;
+  --color-rhubarb-400: #e25c79;
+  --color-rhubarb-500: #cb3661;
+  --color-rhubarb-600: #aa2752;
+  --color-rhubarb-700: #841d44;
+  --color-rhubarb-800: #5e1535;
+  --color-rhubarb-900: #390e25;
+  --color-rhubarb-950: #220817;
+
+  /* leaf — green accent */
+  --color-leaf-300: #c4dc9c;
+  --color-leaf-400: #a1c477;
+  --color-leaf-500: #80a85a;
+  --color-leaf-600: #628844;
+  --color-leaf-700: #496834;
+
+  /* custard — warm cream surfaces */
+  --color-custard-50: #fffaf0;
+  --color-custard-100: #fef3dc;
+  --color-custard-200: #fce6b8;
+
+  --animate-marquee: marquee 28s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-blink: blink 1s steps(2) infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0) rotate(var(--tw-rotate, 0deg));
+    }
+    50% {
+      transform: translateY(-14px) rotate(var(--tw-rotate, 0deg));
+    }
+  }
+  @keyframes blink {
+    0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0;
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-custard-50 text-rhubarb-950 font-sans antialiased;
+  }
+
+  ::selection {
+    @apply bg-rhubarb-300 text-rhubarb-950;
+  }
+}
+
+@layer utilities {
+  .text-stroke-rhubarb {
+    -webkit-text-stroke: 1.5px var(--color-rhubarb-600);
+  }
+}
