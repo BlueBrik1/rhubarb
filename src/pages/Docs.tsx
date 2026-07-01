@@ -901,15 +901,30 @@ for n in range(3):
             <p>
               Beyond the public vocabulary above, the IDE can generate a{" "}
               <strong>private</strong> Rhubarb dialect derived from a single
-              key you control. The grammar never changes — <code>∫</code>,{" "}
-              <code>⟜</code>, <code>⟪…⟫</code>, the mandatory <code>꧃</code>{" "}
-              — but every keyword and all 18 method aliases are replaced with
-              a different, unpredictable nonsense word, deterministically
-              derived from that key. The cipher is symmetric: whichever key
-              encoded a file is the only key that decodes it back, and two
-              different keys never produce the same vocabulary. A{" "}
-              <code>.rhubarb</code> file written in someone else's private
-              dialect is just noise.
+              key you control. Every keyword and all 18 method aliases are
+              replaced with a different, unpredictable nonsense word,
+              deterministically derived from that key. The cipher is
+              symmetric: whichever key encoded a file is the only key that
+              decodes it back, and two different keys never produce the same
+              vocabulary. A <code>.rhubarb</code> file written in someone
+              else's private dialect is just noise.
+            </p>
+            <p>
+              Only <code>∫</code> (the statement terminator) and the
+              mandatory <code>꧃</code> space stay fixed across every dialect
+              — those two are needed just to tokenize a file at all, and
+              never reveal which keyword a token stands for. Everything else
+              that used to be part of the fixed public "grammar" is
+              key-derived too: the assignment separator (public:{" "}
+              <code>⟜</code>), the call-open/call-close delimiters (public:{" "}
+              <code>⟪hívás⟫</code> / <code>⟪vége</code>), and the paired
+              punctuation that wraps each statement keyword (public:{" "}
+              <code>⸘…⸘</code>) are all drawn from that key's own PRNG, from
+              pools that don't overlap the public symbols. See{" "}
+              <a href="#why-grammar-keyed" className="text-rhubarb-600 underline">
+                why the grammar itself had to become part of the key
+              </a>{" "}
+              below.
             </p>
 
             <h3 className="font-display text-lg font-semibold text-rhubarb-950">
@@ -1005,6 +1020,73 @@ for n in range(3):
               everywhere else.
             </p>
 
+            <h3
+              id="why-grammar-keyed"
+              className="font-display text-lg font-semibold text-rhubarb-950"
+            >
+              Why the grammar itself had to become part of the key
+            </h3>
+            <p>
+              The private dialect used to only swap <em>vocabulary</em>:
+              whatever nonsense word meant "if" or ".append" changed with the
+              key, but the surrounding shape of every statement — the
+              separator between a name and its value, the brackets around a
+              call's arguments, the decorative punctuation wrapped around
+              every statement keyword — was always the exact same fixed,
+              public string, byte-for-byte identical in every
+              private-dialect file regardless of key (<code>⟜</code> for
+              every separator, <code>⟪hívás⟫</code>/<code>⟪vége</code> for
+              every call, <code>⸘…⸘</code> around every one of the 12
+              statement keywords).
+            </p>
+            <p>
+              That's a real hole, not a cosmetic one: it means the{" "}
+              <em>formula</em> for going from a private-dialect file back to
+              Python never depended on the key at all. Anyone who has read
+              this page (which has to stay public — it's the language spec)
+              already knows that any line with a name/value pair separated
+              by <code>⟜</code> is an assignment, an import, or a{" "}
+              <code>for</code>; that anything followed by{" "}
+              <code>⟪hívás⟫…⟪vége</code> is a call or a <code>def</code>; that
+              any <code>⸘…⸘</code>-wrapped word is one of exactly 12
+              candidates, disambiguated by whether it takes an argument,
+              whether that argument contains <code>⟜</code>, and whether a
+              block follows it. None of that reasoning ever touches the
+              actual key-derived nonsense words — it's pure structural
+              pattern-matching against a fixed, always-the-same grammar
+              skeleton. A script written once against that fixed skeleton
+              could reconstruct the real Python from <em>any</em>{" "}
+              private-dialect file, for any key, without ever brute-forcing
+              or even knowing the key.
+            </p>
+            <p>
+              The fix: <code>derive_token_set</code> now also draws the
+              assignment separator, the call-open/call-close delimiters, and
+              the keyword-wrap punctuation from the key's own PRNG (from
+              pools of Unicode brackets/arrows disjoint from the public{" "}
+              <code>⟜</code>/<code>⟪…⟫</code>/<code>⸘…⸘</code>), instead of
+              reusing those fixed public strings. Only <code>∫</code> and the
+              mandatory <code>꧃</code> stay universal, because they're
+              needed just to tokenize a file at all and never help identify{" "}
+              <em>which</em> keyword a token stands for. With the grammar
+              symbols keyed as well, there is no longer one fixed shape that
+              every private-dialect file shares — a structural
+              de-obfuscator written for one key's grammar doesn't transfer to
+              another key's file, so recovering the Python now genuinely
+              requires the key, not just a copy of the source.
+            </p>
+            <p>
+              This is a breaking change for any <code>*-rhubarb</code> mirror
+              folder generated before this fix: those files were encoded
+              with the old fixed <code>⟜</code>/<code>⟪hívás⟫</code>/
+              <code>⟪vége</code>/<code>⸘…⸘</code> grammar, so re-running{" "}
+              <code>/mirror</code> (which always re-encodes fresh from the
+              current <code>.py</code> source) is required to bring them up
+              to the new, per-key grammar. There's no in-place upgrade path
+              for an existing <code>.rhubarb</code> mirror file — just
+              regenerate it.
+            </p>
+
             <h3 className="font-display text-lg font-semibold text-rhubarb-950">
               Where the key and vocabulary come from
             </h3>
@@ -1013,9 +1095,11 @@ for n in range(3):
               <code>random.Random</code> directly from the key and draws a
               unique nonsense syllable-word for every keyword slot and method
               alias, retrying on any collision so every word in the
-              vocabulary is distinct. The same key always regenerates the
-              exact same vocabulary; a different key produces a different,
-              unrelated one.
+              vocabulary is distinct. The same PRNG stream also picks this
+              key's assignment separator, call brackets, and keyword-wrap
+              punctuation from their own pools (see above). The same key
+              always regenerates the exact same vocabulary and grammar; a
+              different key produces a different, unrelated one.
             </p>
             <p>
               The key itself is stored in plain text in{" "}

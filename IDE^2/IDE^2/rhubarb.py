@@ -122,10 +122,19 @@ PRINT_TOKENS = (armenianize_every_third("⸘köpd⸘"), "⸘köpd⸘")
 class TokenSet:
     """The keyword vocabulary the decoder recognizes. DEFAULT_TOKENS is the
     fixed, public Hungarian/Armenian vocabulary every .rhubarb file has
-    always used. A custom TokenSet (see rhubarb_keys.py) swaps in a
-    key-derived private vocabulary instead — same grammar (∫, ⟜, ⟪…⟫, the
-    mandatory ꧃), different secret words, so translate() works completely
-    unchanged either way; only *which* words it's looking for differs."""
+    always used, including the classic grammar symbols (⟜, ⟪hívás⟫/⟪vége).
+    A custom TokenSet (see rhubarb_keys.py) swaps in a key-derived private
+    vocabulary instead — and, critically, *also* key-derives the assignment
+    separator and call delimiters (assign_sep/call_open/call_close) rather
+    than reusing the fixed public ones. Those grammar symbols used to be
+    the same literal strings in every private-dialect file regardless of
+    key, which meant the *shape* of a private-dialect file (which tokens
+    take an argument, which use ⟜, which are calls) was fully public and
+    identical across every key — enough on its own to reconstruct the
+    Python source structurally, without ever knowing the key. Deriving
+    them per key closes that: translate() still works completely
+    unchanged either way, but there is no longer a single fixed formula
+    that reverses every private-dialect file at once."""
 
     import_: tuple[str, ...]
     import_as: tuple[str, ...]
@@ -143,6 +152,9 @@ class TokenSet:
     return_: tuple[str, ...]
     print_: tuple[str, ...]
     method_aliases: dict[str, str] = field(default_factory=dict)
+    assign_sep: str = "⟜"
+    call_open: str = "⟪hívás⟫"
+    call_close: str = "⟪vége"
 
 
 DEFAULT_TOKENS = TokenSet(
@@ -268,7 +280,7 @@ def translate_expression(source: str, tokens: TokenSet = DEFAULT_TOKENS) -> str:
         translated = text
         for source_name, python_name in tokens.method_aliases.items():
             translated = translated.replace(source_name, python_name)
-        for opener, closer in CALL_PAIRS:
+        for opener, closer in (*CALL_PAIRS, (tokens.call_open, tokens.call_close)):
             translated = translated.replace(opener, "(").replace(closer, ")")
         pieces.append(translated.replace("∫", ";"))
     return "".join(pieces)
@@ -295,22 +307,24 @@ def translate_line(line: str, line_no: int = 0, tokens: TokenSet = DEFAULT_TOKEN
     if not stripped or stripped.startswith("#"):
         return line
 
+    assign_sep = f" {tokens.assign_sep} "
+
     peeled = peel_token(body, tokens.import_)
     if peeled:
         _, rest = peeled
-        if " ⟜ " in rest:
-            names, module = rest.split(" ⟜ ", 1)
+        if assign_sep in rest:
+            names, module = rest.split(assign_sep, 1)
             return f"{indent}from {translate_expression(module.strip(), tokens)} import {translate_expression(names.strip(), tokens)}{newline}"
         return f"{indent}import {translate_expression(rest, tokens)}{newline}"
 
     peeled = peel_token(body, tokens.import_as)
     if peeled:
         _, rest = peeled
-        if " ⟜ " in rest:
-            module, alias = rest.split(" ⟜ ", 1)
+        if assign_sep in rest:
+            module, alias = rest.split(assign_sep, 1)
             return f"{indent}import {translate_expression(module.strip(), tokens)} as {translate_expression(alias.strip(), tokens)}{newline}"
         _raise_detailed(
-            f"'{peeled[0]}' (import-as) expects 'module ⟜ alias', but got: {rest!r}",
+            f"'{peeled[0]}' (import-as) expects 'module {tokens.assign_sep} alias', but got: {rest!r}",
             line_no,
             len(indent),
             line.rstrip("\n"),
@@ -319,11 +333,11 @@ def translate_line(line: str, line_no: int = 0, tokens: TokenSet = DEFAULT_TOKEN
     peeled = peel_token(body, tokens.assign)
     if peeled:
         _, rest = peeled
-        if " ⟜ " in rest:
-            name, value = rest.split(" ⟜ ", 1)
+        if assign_sep in rest:
+            name, value = rest.split(assign_sep, 1)
             return f"{indent}{translate_expression(name.strip(), tokens)} = {translate_expression(value.strip(), tokens)}{newline}"
         _raise_detailed(
-            f"'{peeled[0]}' (assignment) expects 'name ⟜ value', but got: {rest!r}",
+            f"'{peeled[0]}' (assignment) expects 'name {tokens.assign_sep} value', but got: {rest!r}",
             line_no,
             len(indent),
             line.rstrip("\n"),
@@ -332,15 +346,15 @@ def translate_line(line: str, line_no: int = 0, tokens: TokenSet = DEFAULT_TOKEN
     for class_token in tokens.class_:
         if body.startswith(f"{class_token} "):
             rest = body[len(class_token) + 1 :].strip()
-            if " ⟜ " in rest:
-                name, base = rest.split(" ⟜ ", 1)
+            if assign_sep in rest:
+                name, base = rest.split(assign_sep, 1)
                 return f"{indent}class {translate_expression(name.strip(), tokens)}({translate_expression(base.strip(), tokens)}):{newline}"
             return f"{indent}class {translate_expression(rest, tokens)}:{newline}"
 
     for function_token in tokens.function:
         if body.startswith(f"{function_token} "):
             rest = body[len(function_token) + 1 :].strip()
-            for opener, closer in CALL_PAIRS:
+            for opener, closer in (*CALL_PAIRS, (tokens.call_open, tokens.call_close)):
                 pattern = rf"([\w\u0080-\uffff.]+)\s+{re.escape(opener)}(.*){re.escape(closer)}(?:\s*->\s*(.+))?"
                 match = re.fullmatch(pattern, rest)
                 if match:
@@ -349,7 +363,7 @@ def translate_line(line: str, line_no: int = 0, tokens: TokenSet = DEFAULT_TOKEN
                     return f"{indent}def {name}({translate_expression(args, tokens)}){return_annotation}:{newline}"
             _raise_detailed(
                 f"'{function_token}' (function definition) expects "
-                f"'name {CALL_PAIRS[1][0]} args {CALL_PAIRS[1][1]}', but got: {rest!r}",
+                f"'name {tokens.call_open} args {tokens.call_close}', but got: {rest!r}",
                 line_no,
                 len(indent),
                 line.rstrip("\n"),
@@ -358,11 +372,11 @@ def translate_line(line: str, line_no: int = 0, tokens: TokenSet = DEFAULT_TOKEN
     peeled = peel_token(body, tokens.for_)
     if peeled:
         _, rest = peeled
-        if " ⟜ " in rest:
-            name, value = rest.split(" ⟜ ", 1)
+        if assign_sep in rest:
+            name, value = rest.split(assign_sep, 1)
             return f"{indent}for {translate_expression(name.strip(), tokens)} in {translate_expression(value.strip(), tokens)}:{newline}"
         _raise_detailed(
-            f"'{peeled[0]}' (for loop) expects 'item ⟜ collection', but got: {rest!r}",
+            f"'{peeled[0]}' (for loop) expects 'item {tokens.assign_sep} collection', but got: {rest!r}",
             line_no,
             len(indent),
             line.rstrip("\n"),
