@@ -1,27 +1,37 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "../lib/gsap";
 
-const steps = [
-  {
-    n: "01",
-    title: "Clone",
-    line: "$ git clone https://github.com/BlueBrik1/rhubarb.git",
-  },
-  {
-    n: "02",
-    title: "Install",
-    line: "$ cd rhubarb-ide-webui; npm i; npm run build",
-  },
-  {
-    n: "03",
-    title: "Run",
-    line: "$ cd ..\\ide^2\\ide^2; python3 rhubarb_ide.py",
-  },
-];
+type OsKey = "windows" | "mac" | "linux";
+
+const OS_LABELS: Record<OsKey, string> = {
+  windows: "Windows",
+  mac: "macOS",
+  linux: "Linux",
+};
+
+const STEPS: Record<OsKey, { n: string; title: string; line: string }[]> = {
+  windows: [
+    { n: "01", title: "Clone", line: "$ git clone https://github.com/BlueBrik1/rhubarb.git" },
+    { n: "02", title: "Install", line: "$ cd rhubarb-ide-webui; npm i; npm run build" },
+    { n: "03", title: "Run", line: "$ cd ..\\IDE^2\\IDE^2; python rhubarb_ide.py" },
+  ],
+  mac: [
+    { n: "01", title: "Clone", line: "$ git clone https://github.com/BlueBrik1/rhubarb.git" },
+    { n: "02", title: "Install", line: "$ cd rhubarb-ide-webui && npm i && npm run build" },
+    { n: "03", title: "Run", line: "$ cd ../IDE^2/IDE^2 && python3 rhubarb_ide.py" },
+  ],
+  linux: [
+    { n: "01", title: "Clone", line: "$ git clone https://github.com/BlueBrik1/rhubarb.git" },
+    { n: "02", title: "Install", line: "$ cd rhubarb-ide-webui && npm i && npm run build" },
+    { n: "03", title: "Run", line: "$ cd ../IDE^2/IDE^2 && python3 rhubarb_ide.py" },
+  ],
+};
 
 export default function Install() {
   const rootRef = useRef<HTMLDivElement>(null);
+  const [os, setOs] = useState<OsKey>("windows");
+  const steps = STEPS[os];
 
   useGSAP(
     () => {
@@ -52,14 +62,29 @@ export default function Install() {
             Three steps to get running.
           </h2>
           <p className="mt-4 text-lg text-rhubarb-900/70">
-            The IDE is the only tool you need. Launch it, write a{" "}
-            <code className="font-mono">.rhubarb</code> file, and run it —
-            from the toolbar, or from the terminal's own{" "}
-            <code className="font-mono">rhubarb.py</code> command.
+            Clone the repo, install the frontend, and launch the IDE. Pick
+            your OS for the exact commands.
           </p>
+
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+            {(Object.keys(OS_LABELS) as OsKey[]).map((key) => (
+              <button
+                key={key}
+                onClick={() => setOs(key)}
+                aria-pressed={os === key}
+                className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
+                  os === key
+                    ? "bg-rhubarb-600 text-custard-50"
+                    : "border-2 border-rhubarb-900/15 text-rhubarb-900/70 hover:border-rhubarb-900/30"
+                }`}
+              >
+                {OS_LABELS[key]}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="mt-14 space-y-4">
+        <div className="mt-10 space-y-4">
           {steps.map((step, i) => (
             <div
               key={step.n}

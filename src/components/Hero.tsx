@@ -3,8 +3,8 @@ import { useGSAP } from "@gsap/react";
 import { Link } from "react-router-dom";
 import { gsap } from "../lib/gsap";
 
-const headlineLine1 = ["A language", "that compiles"];
-const headlineLine2 = ["straight to", "Python."];
+const headlineLine1 = ["Write it.", "Encrypt it."];
+const headlineLine2 = ["Ship it as", "Python."];
 
 export default function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -121,16 +121,11 @@ Elաelբápգszդásեalզníէhaըatթanժágիskլdáխaiծokկrt꧃kiաltբs�
         </div>
 
         <p className="hero-sub mt-10 max-w-md text-lg leading-relaxed text-rhubarb-900/70">
-          Rhubarb is a small language that compiles straight to Python, plus
-          the desktop IDE built around it. Every keyword is an intentionally
-          unreadable Hungarian/Armenian-style token — you write{" "}
-          <code className="rounded bg-rhubarb-900/5 px-1.5 py-0.5 font-mono text-base text-rhubarb-700">
-            ⸘kաpdբ
-          </code>{" "}
-          instead of <code className="font-mono">print</code> — but the
-          semantics underneath are just Python's. The IDE adds an interactive
-          terminal, workspace search, and an optional private, key-derived
-          dialect on top.
+          Rhubarb compiles straight to Python. Write it in the public
+          dialect and anyone with the IDE can open and run it — or generate
+          a key and turn the same code into a private dialect that looks
+          completely encrypted to everyone else. The same key decrypts it
+          back to Python; a different key never will.
         </p>
 
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">

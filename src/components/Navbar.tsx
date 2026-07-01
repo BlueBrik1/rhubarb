@@ -4,9 +4,9 @@ import { Link, useLocation } from "react-router-dom";
 import { gsap, ScrollTrigger } from "../lib/gsap";
 
 const links = [
-  { label: "Language", href: "/#features" },
-  { label: "Syntax", href: "/#syntax" },
-  { label: "The IDE", href: "/#install" },
+  { label: "Language", to: { pathname: "/", hash: "#features" } },
+  { label: "Syntax", to: { pathname: "/", hash: "#syntax" } },
+  { label: "The IDE", to: { pathname: "/", hash: "#install" } },
 ];
 
 export default function Navbar() {
@@ -53,13 +53,13 @@ export default function Navbar() {
 
         <nav className="hidden items-center gap-8 md:flex">
           {links.map((link) => (
-            <a
+            <Link
               key={link.label}
-              href={link.href}
+              to={link.to}
               className="font-sans text-sm font-medium text-rhubarb-800/80 transition-colors hover:text-rhubarb-600"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
           <Link
             to="/docs"
@@ -71,12 +71,12 @@ export default function Navbar() {
           </Link>
         </nav>
 
-        <a
-          href="/#install"
+        <Link
+          to={{ pathname: "/", hash: "#install" }}
           className="rounded-full bg-rhubarb-600 px-4 py-2 text-sm font-semibold text-custard-50 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-rhubarb-700"
         >
           Get the IDE
-        </a>
+        </Link>
       </div>
     </header>
   );

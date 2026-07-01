@@ -6,32 +6,32 @@ const features = [
   {
     n: "01",
     title: "Real Python underneath",
-    body: "Every .rhubarb file is Python with the keywords swapped out. The compiler translates it back before anything runs — nothing about execution semantics changes.",
+    body: "Every .rhubarb file compiles back to real Python before anything runs, whether it's public or encrypted. Nothing about execution changes either way.",
   },
   {
     n: "02",
-    title: "Its own mandatory space",
-    body: "Indentation and every gap between tokens use a dedicated Unicode character, ꧃, instead of a normal space or tab. An ordinary space outside a string or comment fails to compile.",
+    title: "Public by default",
+    body: "Write and save a file with no key at all, and anyone with the IDE can open and run it. Nothing is hidden unless you choose to hide it.",
   },
   {
     n: "03",
-    title: "One IDE, one download",
-    body: "Tabs, a file tree, workspace search and replace, and syntax highlighting for every language it opens — except .rhubarb files, which are deliberately never highlighted.",
+    title: "Encrypt it with a key",
+    body: "Generate a key in the IDE, and one terminal command encrypts every Python file in a folder into a private version only that key can read.",
   },
   {
     n: "04",
-    title: "A real terminal, one extra command",
-    body: "The bottom panel has an interactive terminal scoped to a tracked directory. The only thing it does beyond running shell commands is /mirror.",
+    title: "Looks completely encrypted",
+    body: "An encrypted file gives away nothing by looking at it — there's no way to guess what it does. The IDE marks it with a lock badge so you always know which is which.",
   },
   {
     n: "05",
-    title: "An optional private dialect",
-    body: "Generate a key, and /mirror re-encodes any directory's Python into a second, key-derived vocabulary that only the same key can decode back.",
+    title: "Decrypt it with the same key",
+    body: "Open or run an encrypted file with the matching key loaded and it decodes straight back to Python. A different key simply won't work.",
   },
   {
     n: "06",
-    title: "Backwards, if you want",
-    body: "Reverse-line modes let a file be written (or read) with every line reversed, partially or completely, and translated back automatically.",
+    title: "One IDE, one download",
+    body: "Tabs, a file tree, workspace search, and a real interactive terminal — everything you need to write, encrypt, decrypt, and run is in one app.",
   },
 ];
 

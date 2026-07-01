@@ -1,31 +1,30 @@
 import { Link } from "react-router-dom";
+import type { To } from "react-router-dom";
 
-const columns = [
+const columns: { title: string; links: { label: string; to: To }[] }[] = [
   {
     title: "Language",
     links: [
-      { label: "Syntax", href: "/#syntax" },
-      { label: "Docs", href: "/docs" },
-      
+      { label: "Syntax", to: { pathname: "/", hash: "#syntax" } },
+      { label: "Docs", to: "/docs" },
     ],
   },
   {
     title: "The IDE",
     links: [
-      { label: "Download", href: "/#install" },
-      { label: "Examples", href: "/docs#complete-example" },
-      
+      { label: "Download", to: { pathname: "/", hash: "#install" } },
+      { label: "Examples", to: { pathname: "/docs", hash: "#complete-example" } },
     ],
   },
   {
     title: "Community",
-    links: [
-      { label: "GitHub", href: "#" },
-      
-      
-    ],
+    links: [{ label: "GitHub", to: "https://github.com/BlueBrik1/rhubarb" }],
   },
 ];
+
+function isExternal(to: To): boolean {
+  return typeof to === "string" && /^https?:\/\//.test(to);
+}
 
 export default function Footer() {
   return (
@@ -52,16 +51,29 @@ export default function Footer() {
                   {col.title}
                 </h4>
                 <ul className="mt-3 space-y-2">
-                  {col.links.map((link) => (
-                    <li key={link.label}>
-                      <a
-                        href={link.href}
-                        className="text-sm text-rhubarb-900/60 transition-colors hover:text-rhubarb-600"
-                      >
-                        {link.label}
-                      </a>
-                    </li>
-                  ))}
+                  {col.links.map((link) =>
+                    isExternal(link.to) ? (
+                      <li key={link.label}>
+                        <a
+                          href={link.to as string}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-sm text-rhubarb-900/60 transition-colors hover:text-rhubarb-600"
+                        >
+                          {link.label}
+                        </a>
+                      </li>
+                    ) : (
+                      <li key={link.label}>
+                        <Link
+                          to={link.to}
+                          className="text-sm text-rhubarb-900/60 transition-colors hover:text-rhubarb-600"
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    )
+                  )}
                 </ul>
               </div>
             ))}
