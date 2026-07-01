@@ -1,5 +1,17 @@
 import type { TreeNode } from "../types";
 
+const MIRROR_SUFFIX = "-rhubarb";
+
+// Mirrors the backend's is_private_dialect_path: a .rhubarb file counts as
+// private-dialect if it lives anywhere inside a "<name>-rhubarb" mirror
+// folder produced by /mirror, as opposed to an ordinary public-dialect
+// .rhubarb file elsewhere in the workspace.
+export function isPrivateDialectPath(path: string): boolean {
+  const segments = path.split(/[\\/]/);
+  segments.pop();
+  return segments.some((segment) => segment.endsWith(MIRROR_SUFFIX));
+}
+
 export function parentPathOf(fullPath: string): string {
   const idx = Math.max(fullPath.lastIndexOf("\\"), fullPath.lastIndexOf("/"));
   return idx === -1 ? fullPath : fullPath.slice(0, idx);

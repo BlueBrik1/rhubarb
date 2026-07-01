@@ -5,18 +5,18 @@ import { gsap } from "../lib/gsap";
 const steps = [
   {
     n: "01",
-    title: "Get the IDE",
-    line: "$ python3 rhubarb_ide.py",
+    title: "Clone",
+    line: "$ git clone https://github.com/BlueBrik1/rhubarb.git",
   },
   {
     n: "02",
-    title: "Write something",
-    line: "$ open garden.rhubarb",
+    title: "Install",
+    line: "$ cd rhubarb-ide-webui; npm i; npm run build",
   },
   {
     n: "03",
-    title: "Run it",
-    line: "$ python3 rhubarb.py garden.rhubarb",
+    title: "Run",
+    line: "$ cd ..\\ide^2\\ide^2; python3 rhubarb_ide.py",
   },
 ];
 
@@ -49,12 +49,13 @@ export default function Install() {
       <div className="mx-auto max-w-4xl">
         <div className="install-heading mx-auto max-w-xl text-center">
           <h2 className="font-display text-4xl font-bold tracking-tight text-rhubarb-950 sm:text-5xl">
-            Three incredibly easy steps.
+            Three steps to get running.
           </h2>
           <p className="mt-4 text-lg text-rhubarb-900/70">
-            The IDE is the only thing you need. Open it, write a few
-            squiggles, and it compiles straight to Python. Couldn't be
-            simpler. It could not, in fact, be simpler.
+            The IDE is the only tool you need. Launch it, write a{" "}
+            <code className="font-mono">.rhubarb</code> file, and run it —
+            from the toolbar, or from the terminal's own{" "}
+            <code className="font-mono">rhubarb.py</code> command.
           </p>
         </div>
 

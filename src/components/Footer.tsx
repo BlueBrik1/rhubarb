@@ -6,7 +6,7 @@ const columns = [
     links: [
       { label: "Syntax", href: "/#syntax" },
       { label: "Docs", href: "/docs" },
-      { label: "Changelog", href: "#" },
+      
     ],
   },
   {
@@ -14,15 +14,15 @@ const columns = [
     links: [
       { label: "Download", href: "/#install" },
       { label: "Examples", href: "/docs#complete-example" },
-      { label: "Release notes", href: "#" },
+      
     ],
   },
   {
     title: "Community",
     links: [
       { label: "GitHub", href: "#" },
-      { label: "Discussions", href: "#" },
-      { label: "Contributing", href: "#" },
+      
+      
     ],
   },
 ];
@@ -40,8 +40,8 @@ export default function Footer() {
               <span className="text-xl font-bold text-leaf-600">.</span>
             </Link>
             <p className="mt-3 text-sm text-rhubarb-900/60">
-              A language and its own IDE in one box. Unbelievably easy, we
-              swear — full details in the docs, if you must.
+              A language and its own IDE in one project. Full technical
+              details live in the docs.
             </p>
           </div>
 
@@ -70,7 +70,7 @@ export default function Footer() {
 
         <div className="mt-12 flex flex-col gap-3 border-t border-rhubarb-900/10 pt-6 text-sm text-rhubarb-900/50 sm:flex-row sm:items-center sm:justify-between">
           <p>&copy; {new Date().getFullYear()} Rhubarb. MIT licensed.</p>
-          <p>Built with squiggles, not magic.</p>
+          <p>Every .rhubarb file is real Python underneath.</p>
         </div>
       </div>
     </footer>

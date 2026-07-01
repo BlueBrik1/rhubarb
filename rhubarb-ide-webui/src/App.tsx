@@ -2,15 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
 import Editor from "./components/Editor";
-import Output from "./components/Output";
+import BottomPanel from "./components/BottomPanel";
 import StatusBar from "./components/StatusBar";
 import PythonPreviewModal from "./components/PythonPreviewModal";
 import ConfirmCloseModal from "./components/ConfirmCloseModal";
 import ConfirmModal from "./components/ConfirmModal";
 import ContextMenu from "./components/ContextMenu";
+import KeysModal from "./components/KeysModal";
 import { api, whenReady } from "./lib/api";
-import { isPathInside, parentPathOf, resolveDropTarget } from "./lib/paths";
-import type { EditorTab, PendingCreate, ScrollTarget, SearchMatch, TreeNode } from "./types";
+import { isPathInside, isPrivateDialectPath, parentPathOf, resolveDropTarget } from "./lib/paths";
+import type { EditorTab, KeysStatus, PendingCreate, ScrollTarget, SearchMatch, TerminalEntry, TreeNode } from "./types";
 
 export default function App() {
   const [workspaceLabel, setWorkspaceLabel] = useState("Loading workspace…");
@@ -37,6 +38,14 @@ export default function App() {
   const [pendingDeleteNode, setPendingDeleteNode] = useState<TreeNode | null>(null);
   const [draggingPath, setDraggingPath] = useState<string | null>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
+
+  const [keysStatus, setKeysStatus] = useState<KeysStatus>({ hasKey: false });
+  const [keysModalOpen, setKeysModalOpen] = useState(false);
+
+  const [bottomTab, setBottomTab] = useState<"output" | "terminal">("output");
+  const [terminalCwd, setTerminalCwd] = useState("");
+  const [terminalEntries, setTerminalEntries] = useState<TerminalEntry[]>([]);
+  const [terminalBusy, setTerminalBusy] = useState(false);
 
   const activeTab = tabs.find((t) => t.id === activeTabId) ?? null;
 
@@ -103,11 +112,38 @@ export default function App() {
     }
   }
 
+  // ---- keys + terminal ---------------------------------------------------
+
+  async function refreshKeysStatus() {
+    const result = await api.getKeysStatus();
+    setKeysStatus(result);
+  }
+
+  function handleKeysSaved() {
+    setKeysModalOpen(false);
+    refreshKeysStatus();
+  }
+
+  async function handleTerminalRun(command: string) {
+    setTerminalBusy(true);
+    try {
+      const result = await api.terminalRun(terminalCwd, command);
+      setTerminalEntries((prev) => [...prev, { cwd: terminalCwd, command, output: result.output, isError: result.isError }]);
+      setTerminalCwd(result.cwd);
+      refreshTree();
+    } finally {
+      setTerminalBusy(false);
+    }
+  }
+
   useEffect(() => {
     (async () => {
       try {
         await whenReady();
         await loadWorkspace();
+        await refreshKeysStatus();
+        const cwdResult = await api.getTerminalCwd();
+        setTerminalCwd(cwdResult.cwd);
         const starter = await api.newFileContent(null);
         pushNewTab(starter.content, starter.directoryName, false);
         setStatus("Ready");
@@ -258,6 +294,7 @@ export default function App() {
   async function saveTab(tabId: string): Promise<string | null> {
     const tab = tabs.find((t) => t.id === tabId);
     if (!tab) return null;
+
     const result = await api.saveFile(tab.path, tab.content);
     if (result.cancelled) return null;
     if (result.error) {
@@ -363,7 +400,7 @@ export default function App() {
       setStatus("No file open");
       return;
     }
-    const result = await api.showPython(activeTab.content);
+    const result = await api.showPython(activeTab.path, activeTab.content);
     if (result.error) {
       window.alert(result.error);
       return;
@@ -509,10 +546,11 @@ export default function App() {
     const sourcePath = draggingPath;
     setDraggingPath(null);
     if (!sourcePath) return;
-    const targetDir = resolveDropTarget(sourcePath, target);
+    const source: string = sourcePath;
+    const targetDir = resolveDropTarget(source, target);
     if (!targetDir) return;
 
-    const result = await api.movePath(sourcePath, targetDir);
+    const result = await api.movePath(source, targetDir);
     if (result.error) {
       window.alert(result.error);
       return;
@@ -520,8 +558,8 @@ export default function App() {
     const newPath = result.path!;
 
     function remap(path: string): string | null {
-      if (path === sourcePath) return newPath;
-      if (isPathInside(path, sourcePath)) return newPath + path.slice(sourcePath.length);
+      if (path === source) return newPath;
+      if (isPathInside(path, source)) return newPath + path.slice(source.length);
       return null;
     }
 
@@ -570,7 +608,8 @@ export default function App() {
         pendingCloseTabId !== null ||
         contextMenu !== null ||
         pendingDeleteNode !== null ||
-        pendingCreate !== null;
+        pendingCreate !== null ||
+        keysModalOpen;
 
       if (event.key === "Escape") {
         if (pythonPreview !== null) setPythonPreview(null);
@@ -578,6 +617,7 @@ export default function App() {
         else if (contextMenu !== null) setContextMenu(null);
         else if (pendingDeleteNode !== null) setPendingDeleteNode(null);
         else if (pendingCreate !== null) setPendingCreate(null);
+        else if (keysModalOpen) setKeysModalOpen(false);
         return;
       }
 
@@ -655,6 +695,7 @@ export default function App() {
     contextMenu,
     pendingDeleteNode,
     pendingCreate,
+    keysModalOpen,
   ]);
 
   return (
@@ -684,6 +725,8 @@ export default function App() {
           onDragStartNode={handleDragStartNode}
           onDragEndNode={handleDragEndNode}
           onDropNode={handleDropNode}
+          keysLoaded={keysStatus.hasKey}
+          onOpenKeys={() => setKeysModalOpen(true)}
         />
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
@@ -694,6 +737,7 @@ export default function App() {
           onCloseTab={handleCloseTab}
           onRun={handleRun}
           onShowPython={handleShowPython}
+          activeTabIsPrivateDialect={Boolean(activeTab?.path) && isPrivateDialectPath(activeTab!.path!)}
         />
         {activeTab ? (
           <Editor
@@ -707,9 +751,22 @@ export default function App() {
             No file open — press Ctrl+N or Ctrl+O
           </div>
         )}
-        <Output output={output} isError={outputIsError} />
+        <BottomPanel
+          tab={bottomTab}
+          onSelectTab={setBottomTab}
+          output={output}
+          outputIsError={outputIsError}
+          terminalCwd={terminalCwd}
+          terminalEntries={terminalEntries}
+          terminalBusy={terminalBusy}
+          onTerminalRun={handleTerminalRun}
+        />
         <StatusBar message={status} />
       </div>
+
+      {keysModalOpen && (
+        <KeysModal keysStatus={keysStatus} onClose={() => setKeysModalOpen(false)} onSaved={handleKeysSaved} />
+      )}
 
       {pythonPreview !== null && (
         <PythonPreviewModal python={pythonPreview} onClose={() => setPythonPreview(null)} />

@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import type { PendingCreate, SearchMatch, TreeNode } from "../types";
 import IconButton from "./IconButton";
-import { FolderIcon, FileIconGlyph, SearchIcon } from "./icons/ToolbarIcons";
+import { FolderIcon, FileIconGlyph, SearchIcon, KeyIcon } from "./icons/ToolbarIcons";
 import TreeRow from "./TreeRow";
 import SearchPanel from "./SearchPanel";
 
@@ -29,6 +29,8 @@ interface SidebarProps {
   onDragStartNode: (node: TreeNode) => void;
   onDragEndNode: () => void;
   onDropNode: (target: TreeNode) => void;
+  keysLoaded: boolean;
+  onOpenKeys: () => void;
 }
 
 export default function Sidebar({
@@ -55,6 +57,8 @@ export default function Sidebar({
   onDragStartNode,
   onDragEndNode,
   onDropNode,
+  keysLoaded,
+  onOpenKeys,
 }: SidebarProps) {
   const [isRootDragOver, setIsRootDragOver] = useState(false);
   const rootDragCounter = useRef(0);
@@ -84,6 +88,13 @@ export default function Sidebar({
           variant={searchOpen ? "primary" : "ghost"}
         >
           <SearchIcon />
+        </IconButton>
+        <IconButton
+          onClick={onOpenKeys}
+          title="Custom Rhubarb Keys"
+          variant={keysLoaded ? "primary" : "ghost"}
+        >
+          <KeyIcon />
         </IconButton>
       </div>
 

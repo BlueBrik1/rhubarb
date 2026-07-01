@@ -34,12 +34,11 @@ export default function Cta() {
           Go plant something.
         </h2>
         <p className="relative mx-auto mt-4 max-w-md text-lg text-custard-50/80">
-          Rhubarb is free, open source, and ready for a first
+          Rhubarb is free and open source. Get the IDE, write your first
           <code className="mx-1.5 rounded bg-custard-50/15 px-1.5 py-0.5 font-mono text-base">
             .rhubarb
           </code>
-          file. Download the IDE, write it there, ship it as Python. Easy.
-          Definitely easy.
+          file, and run it — it compiles straight to Python.
         </p>
 
         <div className="relative mt-9 flex flex-wrap items-center justify-center gap-4">
@@ -50,7 +49,7 @@ export default function Cta() {
             Get the IDE
           </a>
           <a
-            href="#"
+            href="https://github.com/BlueBrik1/rhubarb"
             className="rounded-full border-2 border-custard-50/40 px-[1.625rem] py-3 font-semibold text-custard-50 transition-colors duration-200 hover:border-custard-50"
           >
             View on GitHub

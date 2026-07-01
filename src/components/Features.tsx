@@ -5,33 +5,33 @@ import { gsap } from "../lib/gsap";
 const features = [
   {
     n: "01",
-    title: "Reads like a sentence",
-    body: "Every keyword is just a friendly little word, like ⸘kաpdբ. You'll get used to it. Probably.",
+    title: "Real Python underneath",
+    body: "Every .rhubarb file is Python with the keywords swapped out. The compiler translates it back before anything runs — nothing about execution semantics changes.",
   },
   {
     n: "02",
-    title: "Short on purpose",
-    body: "The entire grammar fits on one page. A very long page, with several tables on it.",
+    title: "Its own mandatory space",
+    body: "Indentation and every gap between tokens use a dedicated Unicode character, ꧃, instead of a normal space or tab. An ordinary space outside a string or comment fails to compile.",
   },
   {
     n: "03",
-    title: "Learn it by lunch",
-    body: "Most people are fluent by lunchtime. Lunchtime next Tuesday, after a long weekend.",
+    title: "One IDE, one download",
+    body: "Tabs, a file tree, workspace search and replace, and syntax highlighting for every language it opens — except .rhubarb files, which are deliberately never highlighted.",
   },
   {
     n: "04",
-    title: "No docs required",
-    body: "We do have docs. Extensive ones. You'll never need to open them. (You will.)",
+    title: "A real terminal, one extra command",
+    body: "The bottom panel has an interactive terminal scoped to a tracked directory. The only thing it does beyond running shell commands is /mirror.",
   },
   {
     n: "05",
-    title: "One IDE, start to finish",
-    body: "Only one program on Earth can open a .rhubarb file. Lucky you — that's one fewer tool to pick.",
+    title: "An optional private dialect",
+    body: "Generate a key, and /mirror re-encodes any directory's Python into a second, key-derived vocabulary that only the same key can decode back.",
   },
   {
     n: "06",
-    title: "Compiles straight to Python",
-    body: "Every .rhubarb file becomes real Python, eventually, by way of a translation layer of Armenian and Hungarian look-alike runes.",
+    title: "Backwards, if you want",
+    body: "Reverse-line modes let a file be written (or read) with every line reversed, partially or completely, and translated back automatically.",
   },
 ];
 
@@ -61,11 +61,11 @@ export default function Features() {
       <div className="mx-auto max-w-6xl">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-4xl font-bold tracking-tight text-rhubarb-950 sm:text-5xl">
-            Grown for clarity.
+            What it actually does.
           </h2>
           <p className="mt-4 text-lg text-rhubarb-900/70">
-            Rhubarb is a language and an IDE in one box. Six reasons it's the
-            easiest thing you'll ever learn.
+            Rhubarb is a language and an IDE in one project. Here's what's
+            really going on under the hood.
           </p>
         </div>
 

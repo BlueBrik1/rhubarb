@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import type { PendingCreate, TreeNode } from "../types";
-import { resolveDropTarget } from "../lib/paths";
+import { isPrivateDialectPath, resolveDropTarget } from "../lib/paths";
 import FileIcon from "./FileIcon";
 import TreeCreateRow from "./TreeCreateRow";
 
@@ -49,11 +49,13 @@ export default function TreeRow({
   const canDrop = draggingPath !== null && resolveDropTarget(draggingPath, node) !== null;
   const [isDragOver, setIsDragOver] = useState(false);
   const dragCounter = useRef(0);
+  const isPrivateDialect = !node.isDir && node.name.toLowerCase().endsWith(".rhubarb") && isPrivateDialectPath(node.path);
 
   return (
     <div>
       <div
         draggable={depth > 0}
+        title={isPrivateDialect ? "Private dialect — needs the matching key to run" : undefined}
         onClick={() => (node.isDir ? onToggle(node) : onSelectFile(node))}
         onContextMenu={(event) => {
           event.preventDefault();
@@ -121,7 +123,7 @@ export default function TreeRow({
         ) : (
           <span className="inline-block w-3 flex-shrink-0" />
         )}
-        {!node.isDir && <FileIcon name={node.name} />}
+        {!node.isDir && <FileIcon name={node.name} path={node.path} />}
         <span className="truncate font-mono text-[13px]">{node.name}</span>
         {loadingPaths.has(node.path) && (
           <span className="ml-auto text-[10px] text-custard-100/40">…</span>

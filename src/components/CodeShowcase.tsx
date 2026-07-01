@@ -24,31 +24,31 @@ const KEYWORDS = [
 const samples = [
   {
     file: "garden.rhubarb",
-    code: `⸘lաgyբn⸘ néա ⟜ "rhubarb" ∫
-⸘kաpdբ "Language: " + néա.nաgyբetգ⟪hաváբ⟫⟪vաgeբ ∫
+    code: `⸘lաgyբn⸘꧃néա꧃⟜꧃"rhubarb"꧃∫
+⸘kաpdբ꧃"Language: "꧃+꧃néա.nաgyբetգ⟪hաváբ⟫⟪vաgeբ꧃∫
 
-Elաelբápգszդásեalզníէhaըatթanժágիskլdáխaiծokկrt kiաltբs ⟪hաváբ⟫ szա ⟪vաgeբ ∫
-    ⸘vաssբa⸘ szա.nաgyբetգ⟪hաváբ⟫⟪vաgeբ + "!!!" ∫`,
+Elաelբápգszդásեalզníէhaըatթanժágիskլdáխaiծokկrt꧃kiաltբs꧃⟪hաváբ⟫꧃szա꧃⟪vաgeբ꧃∫
+꧃꧃꧃꧃⸘vաssբa⸘꧃szա.nաgyբetգ⟪hաváբ⟫⟪vաgeբ꧃+꧃"!!!"꧃∫`,
   },
   {
     file: "loop.rhubarb",
-    code: `⸘jաrjբ n ⟜ range⟪hաváբ⟫1, 6⟪vաgeբ ∫
-    ⸘kաpdբ n ∫
+    code: `⸘jաrjբ꧃n꧃⟜꧃range⟪hաváբ⟫1,꧃6⟪vաgeբ꧃∫
+꧃꧃꧃꧃⸘kաpdբ꧃n꧃∫
 
-⸘kաröբz⸘ 3 ∫
-    ⸘kաpdբ "again" ∫
+⸘kաröբz⸘꧃3꧃∫
+꧃꧃꧃꧃⸘kաpdբ꧃"again"꧃∫
 
-⸘aաígբ running ∫
-    ⸘kաpdբ "tick" ∫`,
+⸘aաígբ꧃running꧃∫
+꧃꧃꧃꧃⸘kաpdբ꧃"tick"꧃∫`,
   },
   {
     file: "branch.rhubarb",
-    code: `⸘hա⸘ x > 10 ∫
-    ⸘kաpdբ "big" ∫
-⸘mաs-բa⸘ x == 10 ∫
-    ⸘kաpdբ "ten" ∫
-⸘kաlöբbeգ⸘ ∫
-    ⸘kաpdբ "small" ∫`,
+    code: `⸘hա⸘꧃x꧃>꧃10꧃∫
+꧃꧃꧃꧃⸘kաpdբ꧃"big"꧃∫
+⸘mաs-բa⸘꧃x꧃==꧃10꧃∫
+꧃꧃꧃꧃⸘kաpdբ꧃"ten"꧃∫
+⸘kաlöբbeգ⸘꧃∫
+꧃꧃꧃꧃⸘kաpdբ꧃"small"꧃∫`,
   },
 ];
 
@@ -122,13 +122,12 @@ export default function CodeShowcase() {
       <div className="mx-auto max-w-4xl">
         <div className="showcase-reveal mx-auto max-w-2xl text-center">
           <h2 className="font-display text-4xl font-bold tracking-tight text-rhubarb-950 sm:text-5xl">
-            Read it once, know it.
+            See it, then translate it.
           </h2>
           <p className="mt-4 text-lg text-rhubarb-900/70">
-            Three real .rhubarb files, straight from the IDE. Totally
-            self-explanatory — every token is just a friendly little word,
-            like ⸘jաrjբ. If that's somehow not obvious, there's a full
-            translation guide in the docs. We don't know why you'd need it.
+            Three real .rhubarb files from the IDE's own examples. None of
+            this is meant to be readable at a glance — that's the point. The
+            full token-by-token translation guide lives in the docs.
           </p>
         </div>
 

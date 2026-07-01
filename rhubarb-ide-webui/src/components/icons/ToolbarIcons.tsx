@@ -71,6 +71,17 @@ export function SearchIcon({ size = 16 }: { size?: number }) {
   );
 }
 
+export function KeyIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" className="flex-shrink-0">
+      <circle cx="5" cy="5" r="3" stroke="currentColor" strokeWidth="1.4" />
+      <line x1="7.1" y1="7.1" x2="13.5" y2="13.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      <line x1="10.5" y1="10.5" x2="12.3" y2="8.7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      <line x1="12" y1="12" x2="13.6" y2="10.4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function ChevronIcon({ size = 10, expanded = false }: { size?: number; expanded?: boolean }) {
   return (
     <svg

@@ -1,4 +1,6 @@
 import type {
+  KeyResult,
+  KeysStatus,
   MoveResult,
   NewFileResult,
   OpenFileResult,
@@ -6,8 +8,10 @@ import type {
   RenameResult,
   ReplaceResult,
   RunResult,
+  SaveKeysResult,
   SaveResult,
   SearchResponse,
+  TerminalResult,
   TreeNode,
   WorkspaceResult,
 } from "../types";
@@ -23,7 +27,7 @@ declare global {
         new_file_content(selectedPath: string | null): Promise<NewFileResult>;
         save_file(path: string | null, content: string): Promise<SaveResult>;
         run_file(path: string | null, content: string): Promise<RunResult>;
-        show_python(content: string): Promise<PythonPreviewResult>;
+        show_python(path: string | null, content: string): Promise<PythonPreviewResult>;
         choose_workspace(): Promise<WorkspaceResult | { cancelled: true }>;
         create_folder(selectedPath: string | null, name: string): Promise<{ error?: string }>;
         create_file(parentPath: string | null, name: string): Promise<OpenFileResult>;
@@ -33,6 +37,13 @@ declare global {
         new_window(): Promise<{ ok?: boolean; error?: string }>;
         search_workspace(query: string, matchCase: boolean): Promise<SearchResponse>;
         replace_in_file(path: string, query: string, replacement: string, matchCase: boolean): Promise<ReplaceResult>;
+        generate_keys(): Promise<KeyResult>;
+        get_keys_status(): Promise<KeysStatus>;
+        reveal_keys(): Promise<KeyResult>;
+        save_keys(key: string): Promise<SaveKeysResult>;
+        clear_keys(): Promise<{ ok?: boolean; error?: string }>;
+        get_terminal_cwd(): Promise<{ cwd: string }>;
+        terminal_run(cwd: string, command: string): Promise<TerminalResult>;
       };
     };
   }
@@ -82,7 +93,7 @@ export const api = {
   newFileContent: (selectedPath: string | null) => bridge().new_file_content(selectedPath),
   saveFile: (path: string | null, content: string) => bridge().save_file(path, content),
   runFile: (path: string | null, content: string) => bridge().run_file(path, content),
-  showPython: (content: string) => bridge().show_python(content),
+  showPython: (path: string | null, content: string) => bridge().show_python(path, content),
   chooseWorkspace: () => bridge().choose_workspace(),
   createFolder: (selectedPath: string | null, name: string) => bridge().create_folder(selectedPath, name),
   createFile: (parentPath: string | null, name: string) => bridge().create_file(parentPath, name),
@@ -93,4 +104,11 @@ export const api = {
   searchWorkspace: (query: string, matchCase: boolean) => bridge().search_workspace(query, matchCase),
   replaceInFile: (path: string, query: string, replacement: string, matchCase: boolean) =>
     bridge().replace_in_file(path, query, replacement, matchCase),
+  generateKeys: () => bridge().generate_keys(),
+  getKeysStatus: () => bridge().get_keys_status(),
+  revealKeys: () => bridge().reveal_keys(),
+  saveKeys: (key: string) => bridge().save_keys(key),
+  clearKeys: () => bridge().clear_keys(),
+  getTerminalCwd: () => bridge().get_terminal_cwd(),
+  terminalRun: (cwd: string, command: string) => bridge().terminal_run(cwd, command),
 };

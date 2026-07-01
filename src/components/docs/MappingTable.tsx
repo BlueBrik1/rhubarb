@@ -1,9 +1,10 @@
 interface MappingTableProps {
   columns: string[];
   rows: string[][];
+  mono?: boolean;
 }
 
-export default function MappingTable({ columns, rows }: MappingTableProps) {
+export default function MappingTable({ columns, rows, mono = true }: MappingTableProps) {
   return (
     <div className="overflow-x-auto rounded-2xl border border-rhubarb-900/10">
       <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
@@ -28,7 +29,9 @@ export default function MappingTable({ columns, rows }: MappingTableProps) {
               {row.map((cell, j) => (
                 <td
                   key={j}
-                  className="border-b border-rhubarb-900/5 px-4 py-2.5 font-mono text-[13px] text-rhubarb-900/80"
+                  className={`border-b border-rhubarb-900/5 px-4 py-2.5 text-rhubarb-900/80 ${
+                    mono ? "font-mono text-[13px]" : "text-sm leading-relaxed"
+                  }`}
                 >
                   {cell}
                 </td>

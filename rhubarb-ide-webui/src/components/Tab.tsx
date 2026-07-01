@@ -1,5 +1,6 @@
 import FileIcon from "./FileIcon";
 import { CloseIcon } from "./icons/ToolbarIcons";
+import { isPrivateDialectPath } from "../lib/paths";
 import type { EditorTab } from "../types";
 
 interface TabProps {
@@ -11,16 +12,21 @@ interface TabProps {
 
 export default function Tab({ tab, isActive, onSelect, onClose }: TabProps) {
   const isDirty = tab.content !== tab.savedContent;
+  const isPrivateDialect = Boolean(tab.path) && isPrivateDialectPath(tab.path!);
 
   return (
     <div
       onClick={onSelect}
-      title={tab.path ?? tab.name}
+      title={
+        isPrivateDialect
+          ? `${tab.path} (private dialect — needs the matching key to run)`
+          : tab.path ?? tab.name
+      }
       className={`group flex h-9 flex-shrink-0 cursor-pointer items-center gap-1.5 border-r border-rhubarb-950/40 px-3 text-[13px] transition-colors ${
         isActive ? "bg-rhubarb-950 text-custard-50" : "text-custard-100/70 hover:bg-rhubarb-800/50"
       }`}
     >
-      <FileIcon name={tab.name} />
+      <FileIcon name={tab.name} path={tab.path} />
       <span className="font-mono max-w-[12rem] truncate">{tab.name}</span>
       <span className="relative flex h-4 w-4 flex-shrink-0 items-center justify-center">
         {isDirty && (

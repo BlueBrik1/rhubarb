@@ -100,3 +100,30 @@ export interface PendingCreate {
   parentPath: string;
   kind: "file" | "folder";
 }
+
+export interface KeyResult {
+  key?: string;
+  error?: string;
+}
+
+export interface KeysStatus {
+  hasKey: boolean;
+}
+
+export interface SaveKeysResult {
+  hasKey?: boolean;
+  error?: string;
+}
+
+export interface TerminalResult {
+  cwd: string;
+  output: string;
+  isError: boolean;
+}
+
+export interface TerminalEntry {
+  cwd: string;
+  command: string;
+  output: string;
+  isError: boolean;
+}
